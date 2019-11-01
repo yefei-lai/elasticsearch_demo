@@ -1,0 +1,3 @@
+
+elasticSearch7.4.0集成springBoot进行简单增删改查
+通过RestHighlevelClient实现
