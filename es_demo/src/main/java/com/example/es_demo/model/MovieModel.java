@@ -28,4 +28,8 @@ public class MovieModel {
     private Date date;
 
 
+    public MovieModel(String name){
+        this.name = name;
+    }
+
 }

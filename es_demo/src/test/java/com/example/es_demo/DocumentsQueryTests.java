@@ -56,10 +56,11 @@ class DocumentsQueryTests {
 
     /**
      * 查询所有
+     *
      * @throws Exception
      */
     @Test
-    public void searchAll() throws Exception{
+    public void searchAll() throws Exception {
 
         QueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
         System.out.println(searchByQueryBuilder(client, queryBuilder));
@@ -69,7 +70,7 @@ class DocumentsQueryTests {
      * 匹配查询
      */
     @Test
-    public void matchQuery(){
+    public void matchQuery() {
         try {
             QueryBuilder queryBuilder = QueryBuilders.matchQuery("director", "James-Cameron");
             System.out.println(searchByQueryBuilder(client, queryBuilder));
@@ -83,7 +84,7 @@ class DocumentsQueryTests {
      * 多个匹配查询
      */
     @Test
-    public void multiMatchQuery(){
+    public void multiMatchQuery() {
         try {
             //查询 contry type字段都包含ce 的数据
             QueryBuilder queryBuilder = QueryBuilders.multiMatchQuery("romance", "counrty", "type").operator(Operator.OR);
@@ -99,7 +100,7 @@ class DocumentsQueryTests {
      * 字段匹配查询
      */
     @Test
-    public void termQuery(){
+    public void termQuery() {
         try {
             //查询 type 为 "romance"或"action" 的所有数据
             QueryBuilder queryBuilder = QueryBuilders.termsQuery("type", "romance", "action");
@@ -114,7 +115,7 @@ class DocumentsQueryTests {
      * 布尔查询
      */
     @Test
-    public void boolQuery(){
+    public void boolQuery() {
         try {
             BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
             QueryBuilder queryBuilder_name = QueryBuilders.termQuery("name", "leon");
@@ -144,7 +145,7 @@ class DocumentsQueryTests {
      * String 搜索
      */
     @Test
-    public void stringQuery(){
+    public void stringQuery() {
         try {
             //查询 含有 France的数据
             QueryBuilder queryBuilder = QueryBuilders.queryStringQuery("France");
@@ -157,10 +158,11 @@ class DocumentsQueryTests {
 
     /**
      * 排序
+     *
      * @throws IOException
      */
     @Test
-    public void sort() throws IOException{
+    public void sort() throws IOException {
         SearchRequest searchRequest = new SearchRequest("movie");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.from(0).size(10);
@@ -186,9 +188,10 @@ class DocumentsQueryTests {
         SearchHit[] hits = searchHits.getHits();
         //将结果装进对象list中
         List<MovieModel> list = new ArrayList<>();
-        for (SearchHit searchHit : hits){
-            String sourceAsString  = searchHit.getSourceAsString();
-            list.add(JSON.parseObject(sourceAsString, new TypeReference<MovieModel>(){}));
+        for (SearchHit searchHit : hits) {
+            String sourceAsString = searchHit.getSourceAsString();
+            list.add(JSON.parseObject(sourceAsString, new TypeReference<MovieModel>() {
+            }));
         }
         System.out.println(list);
         client.close();
@@ -196,10 +199,11 @@ class DocumentsQueryTests {
 
     /**
      * 聚合查询
+     *
      * @throws IOException
      */
     @Test
-    public void agg() throws IOException{
+    public void agg() throws IOException {
 //        SearchRequest searchRequest = new SearchRequest("movie");
         SearchRequest searchRequest = new SearchRequest("people");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -243,9 +247,9 @@ class DocumentsQueryTests {
         Aggregations aggregations = searchResponse.getAggregations();
         //获取按type分组聚合结果
         Terms byTypeAggregation = aggregations.get("by_sex");
-        for (Terms.Bucket bucket : byTypeAggregation.getBuckets()){
-            System.out.println("key:"+bucket.getKey());
-            System.out.println("docCount:"+bucket.getDocCount());
+        for (Terms.Bucket bucket : byTypeAggregation.getBuckets()) {
+            System.out.println("key:" + bucket.getKey());
+            System.out.println("docCount:" + bucket.getDocCount());
         }
 
 
@@ -280,9 +284,10 @@ class DocumentsQueryTests {
         SearchHit[] hits = searchHits.getHits();
         //将结果装进对象list中
         List<MovieModel> list = new ArrayList<>();
-        for (SearchHit searchHit : hits){
-            String sourceAsString  = searchHit.getSourceAsString();
-            list.add(JSON.parseObject(sourceAsString, new TypeReference<MovieModel>(){}));
+        for (SearchHit searchHit : hits) {
+            String sourceAsString = searchHit.getSourceAsString();
+            list.add(JSON.parseObject(sourceAsString, new TypeReference<MovieModel>() {
+            }));
         }
         return list;
     }

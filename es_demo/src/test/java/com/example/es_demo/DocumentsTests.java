@@ -48,6 +48,7 @@ public class DocumentsTests {
 
     /**
      * 创建索引
+     *
      * @throws IOException
      */
     @Test
@@ -56,8 +57,8 @@ public class DocumentsTests {
         CreateIndexRequest request = new CreateIndexRequest("music");
         //设置索引分片和备份
         request.settings(Settings.builder()
-            .put("index.number_of_shards", 3)
-            .put("index.number_of_replicas", 2));
+                .put("index.number_of_shards", 3)
+                .put("index.number_of_replicas", 2));
         //设置mapping映射
         request.mapping(
                 "{\n" +
@@ -88,7 +89,7 @@ public class DocumentsTests {
                         "    }\n" +
                         "  }\n" +
                         "}",
-                        XContentType.JSON);
+                XContentType.JSON);
         //设置别名
         request.alias(new Alias("music_alias"));
         //发送请求
@@ -96,30 +97,32 @@ public class DocumentsTests {
         CreateIndexResponse response = client.indices().create(request, RequestOptions.DEFAULT);
         boolean acknowledged = response.isAcknowledged();
         boolean shardsAcknowledged = response.isShardsAcknowledged();
-        System.out.println("acknowledged:"+acknowledged);
-        System.out.println("shardsAcknowledged:"+shardsAcknowledged);
+        System.out.println("acknowledged:" + acknowledged);
+        System.out.println("shardsAcknowledged:" + shardsAcknowledged);
     }
 
     /**
      * 删除索引
+     *
      * @throws IOException
      */
     @Test
-    public void deleteIndex() throws IOException{
+    public void deleteIndex() throws IOException {
         //创建删除索引（指向索引：music）
         DeleteIndexRequest request = new DeleteIndexRequest("music");
         //发送请求
         //同步
-        AcknowledgedResponse deleteIndexResponse = client.indices().delete(request,RequestOptions.DEFAULT);
+        AcknowledgedResponse deleteIndexResponse = client.indices().delete(request, RequestOptions.DEFAULT);
         System.out.println(deleteIndexResponse.isAcknowledged());
     }
 
     /**
      * 单个插入数据
+     *
      * @throws IOException
      */
     @Test
-    public void indexIndex() throws IOException{
+    public void indexIndex() throws IOException {
         //创建请求
         IndexRequest request = new IndexRequest("music");
         //设置type 对应 json：post music/_doc/1{...}
@@ -160,11 +163,11 @@ public class DocumentsTests {
 //        request.source(builder);
         //方式四：直接用key-value设置
         request.source("mid", 4,
-                        "name", "Pray",
-                        "type","pop",
-                        "singer","Sam Smith",
-                        "country","England",
-                        "date","2017");
+                "name", "Pray",
+                "type", "pop",
+                "singer", "Sam Smith",
+                "country", "England",
+                "date", "2017");
         //发送请求
         //同步
         IndexResponse indexResponse = client.index(request, RequestOptions.DEFAULT);
@@ -172,10 +175,11 @@ public class DocumentsTests {
 
     /**
      * 删除索引数据(根据_id)
+     *
      * @throws IOException
      */
     @Test
-    public void deleteDocumentIndex() throws IOException{
+    public void deleteDocumentIndex() throws IOException {
         //创建删除请求
         DeleteRequest request = new DeleteRequest("music", "_doc", "2");
         //发送请求
@@ -184,13 +188,14 @@ public class DocumentsTests {
 
     /**
      * 通过id获取单个数据信息
+     *
      * @throws IOException
      */
     @Test
-    public void getIndex() throws IOException{
+    public void getIndex() throws IOException {
         GetRequest getRequest = new GetRequest("music", "_doc", "4");
         GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
-        if (getResponse.isExists()){
+        if (getResponse.isExists()) {
             String sourceAsString = getResponse.getSourceAsString();
             Map<String, Object> sourceAsMap = getResponse.getSourceAsMap();
             System.out.println(sourceAsString);
@@ -200,6 +205,7 @@ public class DocumentsTests {
 
     /**
      * 根据id更新数据
+     *
      * @throws IOException
      */
     @Test
@@ -214,10 +220,11 @@ public class DocumentsTests {
 
     /**
      * 批量操作
+     *
      * @throws IOException
      */
     @Test
-    public void BulkIndex() throws IOException{
+    public void BulkIndex() throws IOException {
         BulkRequest request = new BulkRequest();
         //批量插入
         request.add(new IndexRequest("music", "_doc", "5")
@@ -237,16 +244,16 @@ public class DocumentsTests {
                         "country", "America",
                         "date", "2019"));
         BulkResponse response = client.bulk(request, RequestOptions.DEFAULT);
-        for (BulkItemResponse bulkItemResponse : response){
+        for (BulkItemResponse bulkItemResponse : response) {
             DocWriteResponse writeResponse = bulkItemResponse.getResponse();
             if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.INDEX
-                || bulkItemResponse.getOpType() == DeleteRequest.OpType.CREATE){
+                    || bulkItemResponse.getOpType() == DeleteRequest.OpType.CREATE) {
                 IndexResponse indexResponse = (IndexResponse) writeResponse;
                 //TODO 批量新增成功的处理
-            }else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.UPDATE){
+            } else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.UPDATE) {
                 UpdateResponse updateResponse = (UpdateResponse) writeResponse;
                 //TODO 批量修改成功的处理
-            }else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.DELETE){
+            } else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.DELETE) {
                 //TODO 批量删除成功的处理
             }
         }
