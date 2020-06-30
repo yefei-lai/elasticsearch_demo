@@ -1,6 +1,8 @@
 package com.example.Test;
 
 import java.util.Arrays;
+import java.util.Queue;
+import java.util.Stack;
 
 /**
  * 归并排序
@@ -64,9 +66,9 @@ public class MergeSort {
 
     public static void main(String[] args) {
 
-
         MergeSort mergeSort = new MergeSort();
-        int[] arr = new int[]{4,2,1,3,8,6,7};
+        int[] arr = new int[]{4,2,1,3,8,6,7,9};
         System.out.println(Arrays.toString(mergeSort.mergeSort(arr)));
+
     }
 }
